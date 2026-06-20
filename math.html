@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Math RPG Tree</title>
+
+<style>
+
+body{
+margin:0;
+overflow:hidden;
+background:#050816;
+font-family:Arial;
+}
+
+/* canvas */
+canvas{
+display:block;
+}
+
+/* HUD */
+.hud{
+position:fixed;
+top:20px;
+left:20px;
+color:white;
+background:rgba(30,41,59,0.5);
+padding:12px 16px;
+border-radius:12px;
+backdrop-filter: blur(10px);
+}
+
+/* BACK BUTTON */
+.back{
+position:fixed;
+left:20px;
+top:80px;
+background:#38bdf8;
+color:black;
+padding:12px 18px;
+border-radius:12px;
+cursor:pointer;
+font-weight:bold;
+user-select:none;
+}
+
+.back:hover{
+transform:scale(1.05);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="hud" id="hud"></div>
+
+<div class="back" onclick="goBack()">
+← Назад
+</div>
+
+<canvas id="c"></canvas>
+
+<script>
+
+const canvas=document.getElementById("c");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+/* CAMERA */
+let offsetX=0;
+let offsetY=0;
+
+/* TOUCH / MOUSE */
+let isDown=false;
+let startX=0;
+let startY=0;
+let moved=false;
+
+/* XP */
+let xp=+localStorage.getItem("xp")||0;
+
+/* NODES */
+let nodes=[
+{id:"a",name:"Арифметика",x:0,y:0,progress:load("a")},
+{id:"b",name:"Алгебра",x:-300,y:200,progress:load("b")},
+{id:"c",name:"Геометрия",x:300,y:200,progress:load("c")},
+{id:"d",name:"Планиметрия",x:300,y:450,progress:load("d")},
+{id:"e",name:"Тригонометрия",x:-300,y:450,progress:load("e")},
+{id:"f",name:"Высшая математика",x:0,y:700,progress:load("f")}
+];
+
+function load(id){
+return +localStorage.getItem("node_"+id)||0;
+}
+
+function save(id,val){
+localStorage.setItem("node_"+id,val);
+}
+
+/* LINKS */
+let links=[
+["a","b"],["a","c"],
+["b","e"],["c","d"],
+["d","f"],["e","f"]
+];
+
+function get(id){
+return nodes.find(n=>n.id===id);
+}
+
+/* UNLOCK */
+function unlocked(n){
+if(n.id==="a") return true;
+if(n.id==="b") return get("a").progress>=1;
+if(n.id==="c") return get("a").progress>=1;
+if(n.id==="d") return get("c").progress>=1;
+if(n.id==="e") return get("b").progress>=1;
+if(n.id==="f") return get("d").progress>=1 && get("e").progress>=1;
+return false;
+}
+
+/* DRAW */
+function line(x1,y1,x2,y2){
+ctx.beginPath();
+ctx.strokeStyle="rgba(255,255,255,0.15)";
+ctx.lineWidth=2;
+ctx.moveTo(x1,y1);
+ctx.lineTo(x2,y2);
+ctx.stroke();
+}
+
+function cloud(x,y,r,p,name,lock){
+
+ctx.beginPath();
+ctx.fillStyle="rgba(56,189,248,0.12)";
+ctx.arc(x,y,r+18,0,Math.PI*2);
+ctx.fill();
+
+ctx.beginPath();
+ctx.fillStyle=lock?"rgba(71,85,105,0.9)":"rgba(30,41,59,0.95)";
+ctx.arc(x,y,r,0,Math.PI*2);
+ctx.fill();
+
+ctx.beginPath();
+ctx.fillStyle="rgba(34,197,94,0.6)";
+ctx.arc(x,y,r*p,0,Math.PI*2);
+ctx.fill();
+
+ctx.fillStyle="white";
+ctx.font="14px Arial";
+ctx.textAlign="center";
+ctx.fillText(name,x,y);
+}
+
+/* POINTER DRAG (mouse + touchpad) */
+canvas.addEventListener("pointerdown",(e)=>{
+isDown=true;
+moved=false;
+
+startX=e.clientX-offsetX;
+startY=e.clientY-offsetY;
+});
+
+canvas.addEventListener("pointermove",(e)=>{
+if(!isDown) return;
+
+offsetX=e.clientX-startX;
+offsetY=e.clientY-startY;
+
+moved=true;
+});
+
+canvas.addEventListener("pointerup",(e)=>{
+isDown=false;
+
+/* click only if not moved */
+if(!moved){
+
+let mx=e.clientX;
+let my=e.clientY;
+
+for(let n of nodes){
+
+let x=n.x+offsetX+canvas.width/2;
+let y=n.y+offsetY+canvas.height/2;
+
+let d=Math.hypot(mx-x,my-y);
+
+if(d<60 && unlocked(n)){
+
+n.progress=Math.min(1,n.progress+0.25);
+
+xp+=10;
+
+save(n.id,n.progress);
+localStorage.setItem("xp",xp);
+
+}
+}
+}
+
+});
+
+/* SCROLL ZOOM (touchpad gesture feel) */
+canvas.addEventListener("wheel",(e)=>{
+offsetX -= e.deltaX*0.5;
+offsetY -= e.deltaY*0.5;
+});
+
+/* BACK */
+function goBack(){
+window.location.href="school.html";
+}
+
+/* RENDER */
+function render(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+/* LINKS */
+for(let l of links){
+let a=get(l[0]);
+let b=get(l[1]);
+
+line(
+a.x+offsetX+canvas.width/2,
+a.y+offsetY+canvas.height/2,
+b.x+offsetX+canvas.width/2,
+b.y+offsetY+canvas.height/2
+);
+}
+
+/* NODES */
+for(let n of nodes){
+
+let x=n.x+offsetX+canvas.width/2;
+let y=n.y+offsetY+canvas.height/2;
+
+cloud(x,y,55,n.progress,n.name,!unlocked(n));
+}
+
+document.getElementById("hud").innerHTML=
+`XP: ${xp}`;
+
+requestAnimationFrame(render);
+}
+
+render();
+
+</script>
+
+</body>
+</html>

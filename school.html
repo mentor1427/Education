@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Школьная программа</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0f172a;
+color:white;
+}
+
+header{
+background:#1e293b;
+padding:20px;
+text-align:center;
+}
+
+h1{
+color:#38bdf8;
+}
+
+.container{
+width:90%;
+margin:auto;
+margin-top:50px;
+}
+
+.subjects{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:30px;
+}
+
+.subject{
+background:#1e293b;
+padding:40px;
+border-radius:20px;
+cursor:pointer;
+transition:0.3s;
+text-align:center;
+}
+
+.subject:hover{
+transform:translateY(-10px);
+background:#38bdf8;
+color:black;
+}
+
+.subject h2{
+margin-bottom:20px;
+}
+
+.back{
+margin-top:40px;
+text-align:center;
+}
+
+.back a{
+background:#38bdf8;
+color:black;
+padding:15px 30px;
+text-decoration:none;
+border-radius:15px;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>
+Школьная программа
+</h1>
+
+</header>
+
+<div class="container">
+
+<div class="subjects">
+
+<div class="subject" onclick="window.location.href='math.html'">
+<h2>Математика</h2>
+<p>
+Алгебра, геометрия, теория вероятностей.
+</p>
+</div>
+
+<div class="subject">
+<h2>Языки</h2>
+<p>
+Русский язык, литература, иностранные языки.
+</p>
+</div>
+
+<div class="subject">
+<h2>История</h2>
+<p>
+История России и всемирная история.
+</p>
+</div>
+
+<div class="subject">
+<h2>Естественные науки</h2>
+<p>
+Физика, химия, биология, география.
+</p>
+</div>
+
+<div class="subject">
+<h2>Социальные науки</h2>
+<p>
+Обществознание, экономика, право.
+</p>
+</div>
+
+</div>
+
+<div class="back">
+
+<a href="index.html">
+Вернуться на главную
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>
