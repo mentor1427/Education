@@ -6,7 +6,10 @@
 
 <title>EducationRPG</title>
 
+<!-- HTML section above: page structure and content markup -->
+
 <style>
+/* CSS section: styles and layout for the page */
 
 *{
 margin:0;
@@ -16,19 +19,30 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:#0f172a;
+background:linear-gradient(rgba(15,23,42,0.2), rgba(15,23,42,0.2)), url('фон 2.png') center/cover fixed no-repeat;
 color:white;
+padding-top:100px;
 }
 
 /* заголовок */
 
 header{
+position:fixed;
+top:0;
+left:0;
+right:0;
 display:flex;
 justify-content:space-between;
 align-items:center;
 padding:20px 40px;
-background:#1e293b;
-position: relative;
+background:rgba(30,41,59,0.95);
+backdrop-filter:blur(12px);
+transition:transform 220ms ease;
+will-change:transform;
+}
+
+header.hidden{
+transform:translateY(-120%);
 }
 
 /* логотип */
@@ -62,12 +76,55 @@ background:white;
 border-radius:10px;
 }
 
+/* уровень (правый верхний угол) */
+.level-display{
+	position:fixed;
+	top:26px;
+	right:20px;
+	background:#0b1220;
+	color:#38bdf8;
+	padding:8px 12px;
+	border-radius:12px;
+	font-weight:bold;
+	display:flex;
+	align-items:center;
+	gap:12px;
+	z-index:1002;
+}
+.level-display .level-label{
+	font-size:12px;
+	color:#cbd5e1;
+	position:relative;
+	padding-bottom:8px;
+}
+.level-display .level-value{
+	font-size:18px;
+}
+
+/* прогресс внутри надписи */
+.level-progress{
+	position:absolute;
+	left:0;
+	right:0;
+	bottom:0;
+	height:6px;
+	background:rgba(255,255,255,0.06);
+	border-radius:6px;
+	overflow:hidden;
+}
+.level-progress-fill{
+	width:0%;
+	height:100%;
+	background:linear-gradient(90deg,#38bdf8,#60a5fa);
+	transition:width 400ms ease;
+}
+
 /* выпадающие меню */
 
 .dropdown-menu{
-position:absolute;
-left:40px;
-top:80px;
+position:fixed;
+left:0;
+top:0;
 background:#1e293b;
 width:180px;
 display:none;
@@ -91,7 +148,7 @@ text-decoration:none;
 background:#334155;
 }
 
-/* HERO */
+/* фон */
 
 .hero{
 height:80vh;
@@ -100,11 +157,24 @@ justify-content:center;
 align-items:center;
 flex-direction:column;
 text-align:center;
+transition:transform 220ms ease, opacity 220ms ease;
+will-change:transform, opacity;
+}
+
+.hero.hidden{
+transform:translateY(-80px);
+opacity:0;
 }
 
 .hero h1{
 font-size:60px;
 margin-bottom:20px;
+color:white;
+background: radial-gradient(circle at top left, rgba(56,189,248,0.35), transparent 35%), radial-gradient(circle at bottom right, rgba(59,130,246,0.35), transparent 30%), rgba(15,23,42,0.75);
+padding:24px 34px;
+border-radius:36px;
+box-shadow:0 24px 70px rgba(0,0,0,0.35);
+backdrop-filter: blur(8px);
 }
 
 .hero p{
@@ -114,16 +184,31 @@ margin-bottom:30px;
 }
 
 .button{
-background:#38bdf8;
-color:black;
+background: linear-gradient(135deg, #38bdf8, #6366f1);
+color:#000;
 padding:15px 35px;
-border-radius:12px;
+border-radius:24px;
 text-decoration:none;
 font-weight:bold;
+box-shadow:0 20px 40px rgba(56,189,248,0.18);
+transition:transform 180ms ease, box-shadow 180ms ease;
 cursor:pointer;
 }
 
-/* MODAL */
+.button:hover{
+transform:translateY(-2px);
+box-shadow:0 26px 55px rgba(56,189,248,0.24);
+}
+
+.section h2{
+font-size:42px;
+margin-bottom:20px;
+background: linear-gradient(90deg, #38bdf8, #6366f1);
+-webkit-background-clip: text;
+color: transparent;
+}
+
+/* управление блоками знаний */
 
 .modal{
 display:none;
@@ -139,12 +224,15 @@ z-index:1000;
 }
 
 .modal-content{
-background:#1e293b;
+background:rgba(15,23,42,0.94);
 width:90%;
 max-width:1200px;
 padding:40px;
 border-radius:25px;
 position:relative;
+border:1px solid rgba(56,189,248,0.18);
+box-shadow:0 30px 90px rgba(0,0,0,0.35);
+backdrop-filter:blur(18px);
 }
 
 .close{
@@ -173,21 +261,24 @@ flex-wrap:wrap;
 .direction{
 width:320px;
 height:260px;
-background:#334155;
-border-radius:20px;
+background:rgba(15,23,42,0.65);
+border-radius:28px;
 padding:25px;
 cursor:pointer;
-transition:0.3s;
+transition:transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 display:flex;
 flex-direction:column;
 justify-content:center;
 text-align:center;
+border:1px solid rgba(56,189,248,0.15);
+box-shadow:0 24px 60px rgba(0,0,0,0.18);
+backdrop-filter:blur(10px);
 }
 
 .direction:hover{
-background:#38bdf8;
-color:black;
 transform:translateY(-8px);
+box-shadow:0 32px 70px rgba(56,189,248,0.18);
+background:rgba(56,189,248,0.15);
 }
 
 .direction h3{
@@ -199,10 +290,27 @@ margin-bottom:15px;
 line-height:1.5;
 }
 
-/* FEATURES */
+/* секция описания */
 
 .section{
 padding:70px 40px;
+transition:transform 320ms ease, opacity 320ms ease;
+transform:translateY(100px);
+opacity:0;
+will-change:transform, opacity;
+}
+
+.section.visible{
+transform:translateY(0);
+opacity:1;
+}
+
+.section h2{
+font-size:42px;
+margin-bottom:20px;
+background: linear-gradient(90deg, #38bdf8, #6366f1);
+-webkit-background-clip: text;
+color: transparent;
 }
 
 .cards{
@@ -213,14 +321,82 @@ margin-top:40px;
 }
 
 .card{
-background:#1e293b;
+position:relative;
+background:rgba(15,23,42,0.65);
 padding:30px;
-border-radius:20px;
+border-radius:28px;
+border:1px solid rgba(56,189,248,0.2);
+box-shadow:0 24px 60px rgba(0,0,0,0.18);
+backdrop-filter:blur(10px);
+overflow:visible;
 }
 
 .card h3{
 color:#38bdf8;
 margin-bottom:15px;
+}
+
+.card .hover-panel{
+position:absolute;
+left:50%;
+bottom:calc(100% + 18px);
+width:min(60vw,680px);
+background:linear-gradient(135deg, rgba(14,30,66,0.95), rgba(35,106,211,0.9));
+padding:24px;
+border-radius:24px;
+box-shadow:0 30px 70px rgba(0,0,0,0.45);
+transform:translate(-50%, 20px);
+opacity:0;
+transition:transform 220ms ease, opacity 220ms ease;
+pointer-events:none;
+z-index:20;
+}
+
+.cards > .card:first-child .hover-panel{
+left: 50px;
+right:50px;
+transform:translate(0, 20px);
+}
+
+.cards > .card:last-child .hover-panel {
+    /* position last card*/
+ left: auto;
+ right: 50px;
+ transform: translate(0, 20px);
+}
+
+.cards > .card:first-child:hover .hover-panel{
+transform:translate(0, 0);
+}
+
+.card:hover .hover-panel{
+transform:translate(-50%, 0);
+opacity:1;
+pointer-events:auto;
+}
+
+.hover-panel h4{
+margin:0 0 12px;
+font-size:18px;
+color:#7dd3fc;
+letter-spacing:0.02em;
+}
+
+.hover-panel video{
+width:100%;
+height:auto;
+aspect-ratio:16 / 9;
+border-radius:16px;
+background:#031528;
+margin-bottom:14px;
+max-height:256px;
+object-fit:cover;
+}
+
+.hover-panel p{
+color:#cbd5e1;
+line-height:1.6;
+font-size:14px;
 }
 
 /* FOOTER */
@@ -236,6 +412,7 @@ background:#1e293b;
 
 <body>
 
+<!-- HTML section: visible page content and structure -->
 <header>
 
 <div class="logo">
@@ -243,26 +420,31 @@ EducationRPG
 </div>
 
 <div class="menu-button" onclick="toggleMenu()">
-<span></span>
-<span></span>
-<span></span>
+	<span></span>
+	<span></span>
+	<span></span>
+
+	<div class="dropdown-menu" id="menu">
+		<a href="#">Главная</a>
+		<a href="#">Рейтинг</a>
+		<a href="#">Профиль</a>
+	</div>
 </div>
 
-<div class="dropdown-menu" id="menu">
-<a href="#">Главная</a>
-<a href="#">Рейтинг</a>
-<a href="#">Профиль</a>
+<div class="level-display" id="levelDisplay">
+	<div class="level-label">Уровень
+		<div class="level-progress">
+			<div id="levelFill" class="level-progress-fill"></div>
+		</div>
+	</div>
+	<div class="level-value" id="levelValue">1</div>
 </div>
 
 </header>
 
 <section class="hero">
 
-<h1>Образование нового поколения</h1>
-
-<p>
-Прокачивай навыки, получай опыт и открывай новые знания.
-</p>
+<h1>Прокачивай навыки, получай опыт и открывай новые знания</h1>
 
 <a class="button" onclick="openModal()">
 Начать обучение
@@ -279,21 +461,49 @@ EducationRPG
 <div class="card">
 <h3>XP и уровни</h3>
 <p>Вместо оценок используются опыт, уровни и ранги.</p>
+<div class="hover-panel">
+<h4>Обучалка</h4>
+<video controls autoplay playsinline preload="auto" loop>
+<source src="обучалка.MP4" type="video/mp4">
+</video>
+<p>Видеообучение по теме XP и уровней.</p>
+</div>
 </div>
 
 <div class="card">
 <h3>Дерево наук</h3>
 <p>Каждое знание открывает новые направления развития.</p>
+<div class="hover-panel">
+<h4>Обучалка</h4>
+<video controls autoplay playsinline preload="auto" loop>
+<source src="обучалка.MP4" type="video/mp4">
+</video>
+<p>Видеообучение по теме дерева наук.</p>
+</div>
 </div>
 
 <div class="card">
 <h3>ИИ-наставник</h3>
 <p>Персональный помощник помогает изучать материал.</p>
+<div class="hover-panel">
+<h4>Обучалка</h4>
+<video controls autoplay playsinline preload="auto" loop>
+<source src="обучалка.MP4" type="video/mp4">
+</video>
+<p>Видеообучение по теме ИИ-наставника.</p>
+</div>
 </div>
 
 <div class="card">
 <h3>VR обучение</h3>
 <p>Виртуальные лаборатории и аудитории будущего.</p>
+<div class="hover-panel">
+<h4>Обучалка</h4>
+<video controls autoplay playsinline preload="auto" loop>
+<source src="обучалка.MP4" type="video/mp4">
+</video>
+<p>Видеообучение по теме VR-обучения.</p>
+</div>
 </div>
 
 </div>
@@ -344,18 +554,104 @@ EducationRPG
 </footer>
 
 <script>
+// JavaScript section: behavior and interaction logic
+
+const menuEl = document.getElementById("menu");
+const menuButton = document.querySelector('.menu-button');
+
+function updateMenuPosition(){
+	const rect = menuButton.getBoundingClientRect();
+	// place menu under the button
+	menuEl.style.left = rect.left + 'px';
+	menuEl.style.top = (rect.bottom + 6) + 'px';
+}
 
 function toggleMenu(){
-document.getElementById("menu").classList.toggle("active");
+	if (!menuEl.classList.contains('active')){
+		updateMenuPosition();
+		menuEl.classList.add('active');
+	} else {
+		menuEl.classList.remove('active');
+	}
 }
 
 function openModal(){
-document.getElementById("educationModal").style.display="flex";
+	document.getElementById("educationModal").style.display="flex";
 }
 
 function closeModal(){
-document.getElementById("educationModal").style.display="none";
+	document.getElementById("educationModal").style.display="none";
 }
+
+let lastScroll = window.pageYOffset || document.documentElement.scrollTop;
+window.addEventListener('scroll', ()=>{
+	const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+	if (menuEl.classList.contains('active')) updateMenuPosition();
+	const header = document.querySelector('header');
+	const hero = document.querySelector('.hero');
+	const section = document.querySelector('.section');
+	if (currentScroll > lastScroll && currentScroll > 80){
+		header.classList.add('hidden');
+		if (hero) hero.classList.add('hidden');
+		if (section) section.classList.add('visible');
+	} else {
+		header.classList.remove('hidden');
+		if (hero) hero.classList.remove('hidden');
+		if (section) section.classList.remove('visible');
+	}
+	lastScroll = currentScroll;
+});
+window.addEventListener('resize', ()=>{
+	if (menuEl.classList.contains('active')) updateMenuPosition();
+});
+
+// Level display API
+function setLevel(level){
+	const el = document.getElementById('levelValue');
+	if (el) el.textContent = String(level);
+}
+
+// progress API
+function setLevelProgress(percent){
+	const fill = document.getElementById('levelFill');
+	if (!fill) return;
+	const p = Math.max(0, Math.min(100, Number(percent) || 0));
+	fill.style.width = p + '%';
+}
+
+function setLevelAndProgress(level, percent){
+	setLevel(level);
+	setLevelProgress(percent);
+}
+
+// example initialization
+setLevelAndProgress(3, 42);
+
+const videoObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const video = entry.target;
+    if (!entry.isIntersecting) {
+      video.pause();
+    }
+  });
+}, { threshold: 0.25 });
+
+document.querySelectorAll('.card').forEach(card => {
+  const video = card.querySelector('video');
+  if (!video) return;
+  videoObserver.observe(video);
+  card.addEventListener('mouseenter', () => {
+    if (video.readyState >= 2) {
+      video.play().catch(() => {});
+    } else {
+      video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
+    }
+  });
+  card.addEventListener('mouseleave', () => {
+    video.pause();
+    video.currentTime = 0;
+  });
+});
 
 </script>
 
